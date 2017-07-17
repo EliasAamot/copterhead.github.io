@@ -1,11 +1,15 @@
 var canvas = document.getElementById("mainCanvas");
 var context = canvas.getContext("2d");
+context.font = '10px Arial';
 
 var copterHeadImage = new Image();
 copterHeadImage.src = 'head.png';
 
 var rockImage = new Image();
 rockImage.src = 'rock.png';
+
+var dynamiteImage = new Image();
+dynamiteImage.src = 'dynamite.png';
 
 var copterX = 0;
 const copterY = 505;
@@ -14,20 +18,29 @@ var copterDirection = 0;
 const LEFT_KEY = 37;
 const RIGHT_KEY = 39;
 
-var rocks = [];
+var fallers = [];
 
 var crash = false;
 
+var score = 0;
+
 function draw() {
   context.clearRect(0, 0, canvas.width, canvas.height);
+  context.fillText('Score: ' + score, 10, 10);
   context.drawImage(copterHeadImage, copterX, copterY);
 
-  for (var rock of rocks) {
-    context.drawImage(rockImage, rock['x'], rock['y']);
+  for (var faller of fallers) {
+    var fallerImage = rockImage;
+    if (faller['image'] == 'dynamite') {
+      fallerImage = dynamiteImage;
+    }
+    context.drawImage(fallerImage, faller['x'], faller['y']);
   }
 }
 
 function mainLoop() {
+  score += 1;
+
   // Update player
   nextCopterX = copterX + copterDirection;
   if (nextCopterX < 0 || nextCopterX > (canvas.width - copterHeadImage.width)) {
@@ -36,18 +49,27 @@ function mainLoop() {
   copterX += copterDirection;
 
   // Update falling objects
-  for (var rock of rocks) {
-    rock['y'] += 1;
-    if (isCollision(copterX, copterY, rock['x'], rock['y'])) {
+  let newFallers = []
+  for (var faller of fallers) {
+    faller['y'] += faller['speed'];
+    if (faller['y'] <= canvas.height) {
+      newFallers.push(faller);
+    }
+    if (isCollision(copterX, copterY, faller['x'], faller['y'])) {
       crash = true;
     }
   }
 
   // Spawn rock
   if (Math.random() < 0.01) {
-    var newRock = {'x': Math.random() * canvas.width, 'y': 0};
-    rocks.push(newRock);
+    var newFaller = {'x': Math.random() * canvas.width, 'y': 0, 'speed': 1, 'image': 'rock'};
+    newFallers.push(newFaller);
   }
+  if (Math.random() < 0.005) {
+    var newFaller = {'x': Math.random() * canvas.width, 'y': 0, 'speed': 2, 'image': 'dynamite'};
+    newFallers.push(newFaller);
+  }
+  fallers = newFallers;
 
   if (!crash) {
     draw();
