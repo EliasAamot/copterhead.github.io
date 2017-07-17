@@ -1,5 +1,23 @@
-canvas {
-  /*width: 100%;*/
+html, body {
   height: 100%;
+  margin: 0;
+  background-color: #000;
+}
+
+canvas {
+  height: 100%;
+  width: auto;
+  background-size: 100% 100%;
   background-image: url('skybox.png');
+  background-repeat: no-repeat;
+}
+
+@media screen and (max-width: 600px) {
+  canvas {
+  height: auto;
+  width: 100%;
+  background-size: 100% 100%;
+  background-image: url('skybox.png');
+  background-repeat: no-repeat;
+  }
 }
