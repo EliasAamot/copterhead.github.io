@@ -42,11 +42,11 @@ function mainLoop() {
   score += 1;
 
   // Update player
-  nextCopterX = copterX + copterDirection;
+  nextCopterX = copterX + (4 * copterDirection);
   if (nextCopterX < 0 || nextCopterX > (canvas.width - copterHeadImage.width)) {
     copterDirection = 0;
   }
-  copterX += copterDirection;
+  copterX = nextCopterX;
 
   // Update falling objects
   let newFallers = []
@@ -61,12 +61,12 @@ function mainLoop() {
   }
 
   // Spawn rock
-  if (Math.random() < 0.01) {
-    var newFaller = {'x': Math.random() * canvas.width, 'y': 0, 'speed': 1, 'image': 'rock'};
+  if (Math.random() < 0.02) {
+    var newFaller = {'x': Math.random() * canvas.width, 'y': 0, 'speed': 4, 'image': 'rock'};
     newFallers.push(newFaller);
   }
-  if (Math.random() < 0.005) {
-    var newFaller = {'x': Math.random() * canvas.width, 'y': 0, 'speed': 2, 'image': 'dynamite'};
+  if (Math.random() < 0.01) {
+    var newFaller = {'x': Math.random() * canvas.width, 'y': 0, 'speed': 7, 'image': 'dynamite'};
     newFallers.push(newFaller);
   }
   fallers = newFallers;
@@ -111,4 +111,4 @@ function isCollision(o1x, o1y, o2x, o2y) {
 document.addEventListener("keydown", keyDownHandler, false);
 document.addEventListener("mousedown", mouseDownHandler, false);
 
-setInterval(mainLoop, 5);
+setInterval(mainLoop, 20);
